@@ -1,0 +1,22 @@
+
+
+Item 1: Consider static factory methods instead of constructors
+
+Item 2: Consider a builder when faced with many constructor parameters
+
+Item 3: Enforce the singleton property with a private constructor or an enum type
+
+Item 4: Enforce noninstantiability with a private constructor
+
+Item 5: Prefer dependency injection to hardwiring resources
+ -> Classical by the use of constructor (or static factory, builder) or better by the use of a
+    dependency injection framework
+    Other variant with Java 8 use a supplier
+    Mosaic create(Supplier<? extends> tileFactory) { ... }
+
+Item 6: Avoid creating unnecessary objects
+      Like String s = new String("k");
+      Boolean.valueOf("true") better than new Boolean(true)
+
+
+  https://www.gamedev.net/articles/programming/general-and-gameplay-programming/finite-state-machines-and-regular-expressions-r3176/
