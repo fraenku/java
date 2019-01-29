@@ -2,6 +2,7 @@
 
 ## What is it?
 ElasticSearch is an open-source, scalable search engine based on Lucene.
+It is also considered as a document store, a document beeing a serialized json-file
 
 ## Where did it came from?
 The base of ElasticSearch is Lucene, a library in Java (started around 1997),
@@ -23,6 +24,8 @@ Collect metrics
 ### Distributed and scalable
 Node: An instance of Elasticsearch
 Cluster: A collection of nudes
+Index: A logical way to group data
+Shard: A piece of an index, distributed among different nodes
 
 ### Can be used by any language through an REST API
 
