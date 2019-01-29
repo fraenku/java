@@ -28,7 +28,8 @@ public class LamdaExpressions {
         }
     }
 
-    //Write a function interface
+    //Write a functional interface
+    @FunctionalInterface
     public interface BufferedReaderProcessor {
         String process(BufferedReader b) throws IOException;
     }
@@ -54,7 +55,23 @@ public class LamdaExpressions {
 
         //pretty concise huh?
         List<Integer> l = map(Arrays.asList("lambdas", "in", "action"), (String s) -> s.length());
-        System.out.println(l);
+
+        //Be careful with local variables, since they can be passed to another thread than the one invoking the method, there
+        //could be stale data effects, therefore local variable should be final (implicitly or explicitly)!
+        int portNumber = 1337;
+        Runnable r = () -> System.out.println(portNumber);
+
+        //Method references are a shorthand for a lambda expression
+        //Apple::getWeight() is equivalent to (Apple a) -> a.getWeight()
+
+        //composing is easily possible
+        Function<Integer, Integer> f = x -> x + 1;
+        Function<Integer, Integer> g = x -> (x * 3);
+        Function<Integer, Integer> h = f.andThen(g);
+
+        System.out.println("HHH");
+        System.out.println((h.apply(9)));
+
     }
 
 

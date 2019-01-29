@@ -78,9 +78,9 @@ public class BehaviorParameterization {
         List<String> str = Arrays.asList("a","b","A","B");
         str.sort(String::compareToIgnoreCase);
 
-        Predicate<Apple> redAndHeavyAppleOrGreen =
-                apples.and(a -> a.getWeight() > 150)
-                        .or(a -> "green".equals(a.getColor()));
+//        Predicate<Apple> redAndHeavyAppleOrGreen =
+//                apples.and(a -> a.getWeight() > 150)
+//                        .or(a -> "green".equals(a.getColor()));
 
     }
 
