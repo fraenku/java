@@ -1,0 +1,27 @@
+## Relevance
+The most important in any searches is to provide relevant results.
+There are so measurements helping in that
+
+###Precision
+Ratio of true positives versus total number (true positives + true negatives)
+
+###Recall
+Ratio f true positives versus sum of all documents that should have been returned (
+true p
+
+###Scoring
+Scoring is computed:
+- TF: Term frequency (the more often a term appears in a field, the more important it is)
+- IDF: Inverse term frequency: The more document contain the term, the less important it is (example 'and')
+- Field length: The shorter the more relevant
+
+There are a lot of possibilities to improve precision or recall by taking use of the various search-possibilities
+(bool-queries, should, filter)
+
+### Inverted index
+Term, document-id
+Elastic; 2, 30, 50
+Kibana; 1, 30, 51, 100
+
+The index is built with the help of analyzers
+It is worth to fine-tune the mapping for

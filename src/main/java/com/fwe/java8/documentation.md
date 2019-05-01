@@ -52,6 +52,9 @@ we can use either a method reference:
 `File[] hiddenFiles = new File(".").listFiles(File::isHidden);`
 or a Lambda-expression (x) -> x + 1
 
+Real live examples of behavior parametrization are comparing a list with a comparator, running runnable in a thread or add a gui event handler.
+See BehaviorParameterization for an iterative approach of improving a method.
+
 ###Default methods
 Adding a
 new method to an interface means all concrete classes must provide an implementation

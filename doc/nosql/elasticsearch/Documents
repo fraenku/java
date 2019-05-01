@@ -1,0 +1,42 @@
+## Document
+Elastic is a document store, a document being a JSON object
+
+## Index
+A logical way of grouping data, has
+- a mapping that defined the fields in the index
+- is logical namespace that maps to where its contents are stored in the cluster
+
+## Shards
+Is a single piece of an index (distributed)
+Indexes are partioned into shards so they can be distributed accross multiple nodes
+
+Index
+PUT my_blogs/_doc/4
+{
+ "title" : "Elasticsearch released",
+ "category": "Releases"
+}
+
+Create
+PUT my_blogs/_doc/4/_create
+{
+ "title" : "Elasticsearch released",
+ "category": "Releases"
+}
+
+Read
+GET my_blogs/_doc/4
+
+Update
+
+POST my_blogs/_doc/4/_update
+{
+ "doc" : {
+ "title" : "Elasticsearch 6.2 released"
+ }
+}
+
+Delete DELETE my_blogs/_doc/4
+
+Search GET my_blogs/_search
+}
