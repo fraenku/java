@@ -72,3 +72,23 @@ calls the static method Collections.sort:
 `default void sort(Comparator<? super E> c) {
 Collections.sort(this, c);
 }`
+
+###Lambdas
+Lambdas are
+- Anonymous, they do not have a name
+- Function, they are not bound to a class like a method, but have also a list of parameters, a body, a return type and a possible list of exceptions
+- Passed around
+- Concise
+
+The basic syntax is
+`(parameters) -> expression`
+or
+`(parameters) -> { statements; }`
+
+Lambdas can be used where a function interface is expected. A function interface is an interface with only one abstract method, like Comparator or Runnable
+The lambda expression can be assigned to a variable or passed to a method if the lambda expression has
+the same signature as the abstract method of the functional interface.
+ 
+It's a good practice to declare function interface with the annotation
+@FunctionalInterface
+
