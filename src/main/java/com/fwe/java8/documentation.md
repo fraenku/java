@@ -92,3 +92,158 @@ the same signature as the abstract method of the functional interface.
 It's a good practice to declare function interface with the annotation
 @FunctionalInterface
 
+Caveat!
+Lambdas have only access tu surrounding local variables if they are final,
+since local variable are stored on the Stack and not the heap. 
+
+**Method-References**
+
+Can be used as shortcuts
+
+(args) -> ClassName. staticMethod(args)
+ClassName::staticMethod
+
+(arg0, rest) -> arg0.instanceMethod(rest)
+ClassName::instanceMethod
+
+(args) -> expr. instanceMethod(args)
+expr.instanceMethod
+
+**Constructor-References**
+
+`Function<Integer, Apple> c2 = Apple::new;
+Apple a2 = c2.apply(110);`
+
+is the same as
+
+`Function<Integer, Apple> c2 = (weight) -> new Apple(weight);
+Apple a2 = c2.apply(110);
+`
+
+The capability of referring to a constructor without instantiating it enables interesting
+applications. For example, you can use a Map to associate constructors with a string
+value. You can then create a method giveMeFruit that, given a String and an Integer,
+can create different types of fruits with different weights:
+`
+static Map<String, Function<Integer, Fruit>> map = new HashMap<>();
+static {
+  map.put("apple", Apple::new);
+  map.put("orange", Orange::new);
+// etc...
+}`
+
+`public static Fruit giveMeFruit(String fruit, Integer weight){
+return map.get(fruit.toLowerCase())
+.apply(weight);
+}`
+
+**Lambda in a nutshell**
+
+To wrap up this chapter and all we’ve discussed on lambdas, we continue with our initial
+problem of sorting a list of Apples with different ordering strategies and show how
+you can progressively evolve a naïve solution into a concise solution, using all the concepts
+and features explained so far in the book: behavior parameterization, anonymous
+classes, lambda expressions, and method references.
+
+You’re lucky; the Java 8 API already provides you with a sort method available on
+List so you don’t have to implement it. So the hard part is done! But how can you
+pass an ordering strategy to the sort method? Well, the sort method has the following
+signature:
+
+`void sort(Comparator<? super E> c)`
+
+***Step 1: pass code***
+
+It expects a Comparator object as argument to compare two Apples! This is how you
+can pass different strategies in Java: they have to be wrapped in an object. We say that
+the behavior of sort is parameterized: its behavior will be different based on different
+ordering strategies passed to it.
+Your first solution looks like this:
+
+`public class AppleComparator implements Comparator<Apple> {
+    public int compare(Apple a1, Apple a2){
+        return a1.getWeight().compareTo(a2.getWeight());
+    }
+}
+inventory.sort(new AppleComparator());`
+
+***Step 2: use an anonymous class***
+Rather than implementing Comparator for the purpose of instantiating it once, you
+saw that you could use an anonymous class to improve your solution.
+
+`inventory.sort(new Comparator<Apple>() {
+    public int compare(Apple a1, Apple a2){
+        return a1.getWeight().compareTo(a2.getWeight());
+    }
+});`
+
+***Step 3: use lambda expression***
+But your current solution is still verbose. Java 8 introduces lambda expressions, which
+provide a lightweight syntax to achieve the same goal: passing code. You saw that a
+lambda expression can be used where a functional interface is expected. As a reminder,
+a functional interface is an interface defining only one abstract method. The signature
+of the abstract method (called function descriptor) can describe the signature of a
+lambda expression. In this case, the Comparator represents a function descriptor (T,
+T) -> int. Because you’re using apples, it represents more specifically (Apple, Apple)
+-> int. Your new improved solution looks therefore as follows:
+
+`inventory.sort((Apple a1, Apple a2)
+    -> a1.getWeight().compareTo(a2.getWeight())
+);`
+
+***Step 4: use method references***
+
+We explained that the Java compiler could infer the types of the parameters of a lambda
+expression by using the context in which the lambda appears. So you can rewrite your
+solution like this:
+
+`inventory.sort((a1, a2) -> a1.getWeight().compareTo(a2.getWeight()));`
+
+Can you make your code even more readable? Comparator has a static helper method
+called comparing that takes a Function extracting a Comparable key and produces a
+Comparator object (we explain why interfaces can have static methods in chapter 9).
+It can be used as follows (note that you now pass a lambda with only one argument:
+the lambda specifies how to extract the key to compare with from an apple):
+
+`Comparator<Apple> c = Comparator.comparing((Apple a) -> a.getWeight());`
+
+**Composing**
+Several functional interfaces contain convenient methods which allows chaining of lambdas:
+
+`Predicate<Apple> redAndHeavyAppleOrGreen =
+redApple.and(a -> a.getWeight() > 150)
+.or(a -> "green".equals(a.getColor()));`
+
+`Function<Integer, Integer> f = x -> x + 1;
+Function<Integer, Integer> g = x -> x * 2;
+Function<Integer, Integer> h = f.andThen(g);
+int result = h.apply(1);
+`
+
+**Summary**
+
+Following are the key concepts you should take away from this chapter:
+- A lambda expression can be understood as a kind of anonymous function: it
+doesn’t have a name, but it has a list of parameters, a body, a return type, and
+also possibly a list of exceptions that can be thrown.
+- Lambda expressions let you pass code concisely.
+- A functional interface is an interface that declares exactly one abstract method.
+- Lambda expressions can be used only where a functional interface is expected.
+Lambda expressions let you provide the implementation of the abstract method
+of a functional interface directly inline and treat the whole expression as an instance
+of a functional interface.
+- Java 8 comes with a list of common functional interfaces in the java.util
+.function package, which includes Predicate<T>, Function<T, R>, Supplier<T>,
+Consumer<T>, and BinaryOperator<T>, described in table 3.2.
+- There are primitive specializations of common generic functional interfaces
+such as Predicate<T> and Function<T, R> that can be used to avoid boxing
+operations: IntPredicate, IntToLongFunction, and so on.
+- The execute around pattern (that is, you need to execute a bit of behavior in
+the middle of code that’s always required in a method, for example, resource
+allocation and cleanup) can be used with lambdas to gain additional flexibility
+and reusability.
+- The type expected for a lambda expression is called the target type.
+- Method references let you reuse an existing method implementation and pass
+it around directly.
+- Functional interfaces such as Comparator, Predicate, and Function have default methods
+ that can be used to combine lambda expressions.
