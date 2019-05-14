@@ -107,6 +107,10 @@ Stream.generate(Math::random).limit(4).forEach(System::out)
 Stream.iterate can produces infinite streams, values are computed on demand. Big differences to collections.
 
 ####Collecting data with streams
+
+A stream is terminated by a terminal operation, consuming a stream to produce a final result.
+The class Collectors offers many static factory methods returning Collector-instances. 
+
 ```  Java
 List<Transaction> transactions = transactionStream.collect(Collectors.toList());
 ```
@@ -119,4 +123,105 @@ menu.stream().collect(summarizingInt(Dish::getCalories));
 returns a complete statistics containing count,s ume, min, average, max
 ```  Java
 String shortMenu = menu.stream().map(Dish::getName).collect(joining());
+```
+
+
+
+####Grouping
+Much easier than with Java < 8:
+```  Java
+Map<Dish.Type, List<Dish>> dishesByType =
+menu.stream().collect(groupingBy(Dish::getType));
+```
+Also multilevel grouping is possible
+```  Java
+Map<Dish.Type, Map<CaloricLevel, List<Dish>>> dishesByTypeCaloricLevel =
+    menu.stream().collect(
+    groupingBy(Dish::getType,
+        groupingBy(dish -> {
+            if (dish.getCalories() <= 400) return CaloricLevel.DIET;
+            else if (dish.getCalories() <= 700) return CaloricLevel.NORMAL;
+            else return CaloricLevel.FAT;
+        } )
+    )
+);
+{MEAT={DIET=[chicken], NORMAL=[beef], FAT=[pork]},
+FISH={DIET=[prawns], NORMAL=[salmon]},
+OTHER={DIET=[rice, seasonal fruit], NORMAL=[french fries, pizza]}}
+```
+
+A special case of grouping is partitioning, grouping into two categories:
+```  Java
+Map<Boolean, List<Dish>> partitionedMenu =
+menu.stream().collect(partitioningBy(Dish::isVegetarian));
+```
+Note that the same could be achieved with a filter, but you loose access to the filtered
+elements.
+```  Java
+List<Dish> vegetarianDishes =
+menu.stream().filter(Dish::isVegetarian).collect(toList());
+```
+
+#### For Advanced developers
+The Collector interface can be implemented by yourself, but that's not an easy task.
+```  Java
+public interface Collector<T, A, R> {
+    Supplier<A> supplier();
+    BiConsumer<A, T> accumulator();
+    Function<A, R> finisher();
+    BinaryOperator<A> combiner();
+    Set<Characteristics> characteristics();
+}
+```
+- T is the generic type of the items in the stream to be collected.
+- A is the type of the accumulator, the object on which the partial result will be
+accumulated during the collection process.
+- R is the type of the object (typically, but not always, the collection) resulting
+from the collect operation.
+
+The suplier is the starting point, an empty accumulator used during the collection process.
+Example:
+```  Java
+public Supplier<List<T>> supplier() {
+return () -> new ArrayList<T>();
+}
+```
+The accumulator explains what is done when traversing the nth element in the stream after having
+collected the first n-1 items.
+```  Java
+public BiConsumer<List<T>, T> accumulator() {
+  return (list, item) -> list.add(item);
+```
+
+The finisher is invoked at the end of the accumulation process, after having completely traversed
+the stream, in order t transform the accumulator object into the final result.
+Example:
+```  Java
+public Function<List<T>, List<T>> finisher() {
+return Function.identity();
+}
+``` 
+
+The combiner method, defines how the accumulators resulting from the reduction of
+different subparts of the stream are combined when the subparts are processed in parallel.
+
+```  Java
+public BinaryOperator<List<T>> combiner() {
+  return (list1, list2) -> {
+  list1.addAll(list2);
+  return list1; }
+}
+
+```
+
+Characteristics method
+The last method, characteristics, returns an immutable set of Characteristics,
+defining the behavior of the collector—in particular providing hints about whether
+the stream can be reduced in parallel.
+```  Java
+Example:
+public Set<Characteristics> characteristics() {
+return Collections.unmodifiableSet(EnumSet.of(
+IDENTITY_FINISH, CONCURRENT));
+}
 ```
