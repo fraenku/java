@@ -225,3 +225,26 @@ return Collections.unmodifiableSet(EnumSet.of(
 IDENTITY_FINISH, CONCURRENT));
 }
 ```
+
+#### Parallel data processing
+It’s possible to turn a collection into a
+parallel stream by invoking the method parallelStream on the collection source. A
+parallel stream is a stream that splits its elements into multiple chunks, processing each
+chunk with a different thread. Thus, you can automatically partition the workload of a
+given operation on all the cores of your multicore processor and keep all of them
+equally busy.
+
+Don't expect parallel() to be a magic bullet. First:
+- Applied on the wrong place it can produce a false result
+- Parallelism can slow down the calculation if it applied on an unappropiate
+pipeline, see the examples under Streams.java
+- Keep in mind that parallelization doesn’t come for free. The parallelization
+  process itself requires you to recursively partition the stream, assign the reduction
+  operation of each substream to a different thread, and then combine the results
+  of these operations in a single value. But moving data between multiple cores is also
+  more expensive than you might expect, so it’s important that work to be done in parallel
+  on another core takes longer than the time required to transfer the data from
+
+
+In doubt if parallelisms brings a gain in performance, measure!
+
