@@ -179,7 +179,7 @@ accumulated during the collection process.
 - R is the type of the object (typically, but not always, the collection) resulting
 from the collect operation.
 
-The suplier is the starting point, an empty accumulator used during the collection process.
+The supplier is the starting point, an empty accumulator used during the collection process.
 Example:
 ```  Java
 public Supplier<List<T>> supplier() {
