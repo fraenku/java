@@ -73,6 +73,8 @@ calls the static method Collections.sort:
 Collections.sort(this, c);
 }`
 
+
+
 ###Lambdas
 Lambdas are
 - Anonymous, they do not have a name
@@ -219,6 +221,11 @@ Function<Integer, Integer> g = x -> x * 2;
 Function<Integer, Integer> h = f.andThen(g);
 int result = h.apply(1);
 `
+
+> Refactoring hint: Think of replacing annonymous classes by lambda expressions. However caveat: This referes to the anonymous
+class, while this refers to the enclosing class in a lambda expression. Furhtermore anonymous classes are allowed to shadow variables 
+from the enclosing class. Lambda expressions can't.  
+> 
 
 **Summary**
 
