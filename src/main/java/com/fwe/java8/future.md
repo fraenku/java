@@ -30,9 +30,8 @@ That's why CompletableFutures were introduced.
 
 
 
-
-###Compleatable Fututre
-Writing an async API
+##An example
+It's good practice to write async API's, so let's go for it
 ``` Java
 public Future<Double> getPriceAsync(String product) {
   CompletableFuture<Double> futurePrice = new CompletableFuture<>();
@@ -71,7 +70,7 @@ try {
 
 Formula, how many threads should be used:
 
-N<sub>threads</sub> = N<sub>CPU</sub> * U<sub>CPU</sub> * (1 + W/C)
+> N<sub>threads</sub> = N<sub>CPU</sub> * U<sub>CPU</sub> * (1 + W/C)
 
 N<sub>CPU</sub>: Number of cores, Runtime.getRuntime().availableProcessors()
 U<sub>CPU</sub> is the target CPU utilization (between 0 and 1)

@@ -1,16 +1,17 @@
 # Java 8
-
 The new features in Java 8 (Release 2014) are the biggest change to Java in the 18 years since
 Java 1.0 was released in 1996. Nothing has been taken away, so all your existing Java code continues
 to work—but the new features provide powerful new idioms and design patterns to help you write clearer, more concise code. 
 
 ## Success of Java
+###Early years
 The write-once run-anywhere model of Java and the ability of early browsers
 to (safely) execute Java code applets gave it a niche in universities, whose graduates
 then populated industry. There was initial resistance to the additional run cost of Java
 over C/C++, but machines got faster and programmer time became more and more
 important.
 
+###Evolution
 Languages need to evolve to track changing hardware
 or programmer expectations (if you need convincing, then consider that COBOL
 was once one of the most important languages commercially).
@@ -21,23 +22,24 @@ The changes in Java 8 were driven by two 'climate'-changes:
 - The arrival of multicore processors and therefore the need to exploit them. Making the code run faster requires parallel code.
 - The arrival of Big Data with the need to manipulate collections of data with a declartive style.
 
-The changes of Java 8 can be summarized to the following:
+## Most important changes
 
-### Behavior parameterization (lambdas and method references)
+### Behavior parametrization (lambdas and method references)
 To adapt the way a method is working (like sort) there must exist a way to handle a piece of code to the method (instead of list of flags).
 Prior to Java 8 this was mostly done with Anonymous Classes. Java 8 provides now two new ways, borrowed from functional programming, to pass a piece
 of code:
 - Passing a lamba (apple -> apple.getWeight() > 150)
 - Passing a method reference (Apple::isHeavy)
 
+See a [concrete example](BehaviorParameterization.java) of how to refactor a piece of code with behavior parametrization
+
+
 ### Streams
-Streams
 The collection classes in Java, along with iterators and the for-each construct, have
 served us honorably for a long time. It would have been easy for the Java 8 designers
 to add methods like filter and map to collections, exploiting the lambdas mentioned
 previously to express database-like queries. But they didn’t—instead they added a
-whole new Streams API, the subject of chapters 4–7—and it’s worth pausing to consider
-why.
+whole new Streams API.
 What’s wrong with collections that requires them to be replaced or augmented
 with a similar but different notion of streams? We’ll summarize it like this: if you have
 a large collection and apply three operations to it, perhaps mapping the objects in the
@@ -51,10 +53,10 @@ The other, no less important, reasons concern the ability to process elements in
 parallel, which is vital to efficiently exploit multicore CPUs. Streams, in particular the
 method parallel, allow a stream to be marked as suitable for parallel processing.
 Recall here that parallelism and mutable state fit badly together, so core functional
-concepts (side-effect-free operations and methods parameterized with lambdas and
-method references that permit internal iteration instead of external iteration, as discussed
-in chapter 4) are central to exploiting streams in parallel using map, filter,
+concepts are central to exploiting streams in parallel using map, filter,
 and the like
+
+See [concrete examples](Streams.java) and [read](streams.md) for more info.
 
 ###CompletableFututre
 Java has provided the Future interface since Java 5. Futures are useful for exploiting
@@ -62,9 +64,8 @@ multicore because they allow a task to be spawned onto another thread or core an
 allow the spawning task to continue executing along with the spawned task. When the
 spawning task needs the result, it can use the get method to wait for the Future to
 complete (produce its value).
-Chapter 11 explains the Java 8 CompletableFuture implementation of Future.
-Again this exploits lambdas. A useful, if slightly imprecise, motto is that “Completable-
-Future is to Future as Stream is to Collection.” Let’s compare:
+
+"Completable-Future" is to Future as Stream is to Collection.” Let’s compare:
 
 - Stream lets you pipeline operations and provides behavior parameterization
 with map, filter, and the like, thus avoiding the boilerplate code you typically
@@ -74,6 +75,8 @@ have to write using iterators.
 Combine, and allOf, which give functional-programming-style concise encodings
 of common design patterns involving Futures, and let you avoid similar
 imperative-style boilerplate code.
+
+[Read](future.md) for more info
 
 ###Optional
 The Java 8 library provides the class Optional<T>, which allows your code to specify
@@ -93,6 +96,8 @@ again in functional style, with the tests for missing value done by the library 
 user code. This internal testing versus external testing choice is directly analogous to
 how the Streams library does internal iteration versus external iteration in user code.
 
+[Read](optional.md) for more info
+
 ###Default methods
 There are other additions to Java 8, none of which particularly affect the expressiveness
 of any individual program. But one thing that is helpful for library designers is the addition
@@ -104,4 +109,11 @@ ability to augment an interface with a new operation, without having to require 
 (classes implementing this interface) to add code to define this method. Therefore,
 default methods are also relevant to users of libraries because they shield them
 from future interface changes.
+
+[Read](default_methods.md) for more info
+
+
+###Sources
+Java 8 in Action
+Effective Java, 3rd Edition
 
