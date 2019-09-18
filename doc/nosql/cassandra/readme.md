@@ -31,6 +31,14 @@ CL = All, every node has to acknowledge. We are consistent, but turning partitio
 <h2>Hinted Hand off</h2>
 The cordinator keeps writes in a log file in a case a node is down for a limited time
 
+<h2>Write path</h2>
+Data is written to Memory (Mem-Table) and HDD (Commit Log). 
+On the commit log the records are inserted sequentially, on the memory according the clustering columns
+The commit log is here in case of crashed (restoring) and the memory for reading.
+If mem-table is full, flush to HDD as SSTable (immutable) and delete the commit log
+Recommendation: Seperate commit log from SSTable seperate Hard-Disk
+
+
 <h2>When to use Cassandra</h2>
 Updates: Cassandra is very good at writes, okay with reads. Updates and deletes are implemented as special cases of writes and that has consequences that are not immediately obvious.
 
